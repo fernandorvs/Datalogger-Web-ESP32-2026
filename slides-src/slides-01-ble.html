@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Slides · Proyecto 01 · Logger BLE</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- 1 · Portada -->
+<section class="slide oscura">
+  <div style="height:70px"></div>
+  <div class="puntos"><span class="punto actual"></span><span class="punto"></span></div>
+  <div class="kicker">Proyecto 01 · Datalogger Web</div>
+  <h1>Logger BLE</h1>
+  <p class="sub">Un registrador de dos canales sin instalar nada: el ESP32 mide,
+  <b>Bluetooth Low Energy</b> transporta y <b>el navegador</b> registra.</p>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+<!-- 2 · Agenda -->
+<section class="slide">
+  <div class="kicker">Hoy</div>
+  <h1>Del sensor al CSV, sin cables</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">1 · 15 min</div><h3>¿Qué es un datalogger?</h3></div>
+    <div class="card"><div class="ck">2 · 25 min</div><h3>BLE y GATT</h3></div>
+    <div class="card"><div class="ck">3 · 15 min</div><h3>El dato binario</h3></div>
+  </div>
+  <div class="cards c3" style="margin-top:32px">
+    <div class="card"><div class="ck">4 · 20 min</div><h3>Web Bluetooth</h3></div>
+    <div class="card"><div class="ck">5 · 45 min</div><h3>Manos a la obra</h3></div>
+    <div class="card"><div class="ck">6 · 30 min</div><h3>Experimentos y discusión</h3></div>
+  </div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">2</div>
+</section>
+
+<!-- 3 · Datalogger = cadena de medición -->
+<section class="slide">
+  <div class="kicker">1 · ¿Qué es un datalogger?</div>
+  <h1>La cadena de medición completa</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">sensores</div><h3>DS18B20 + pote</h3><p>dos canales: temperatura digital y posición analógica</p></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">enlace</div><h3>Bluetooth LE</h3><p>la única pieza nueva de hoy</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">registro</div><h3>Navegador</h3><p>gráfico en vivo, estadísticas y CSV</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>Un datalogger no es "una página linda": es la etapa de
+  <b>presentación y registro</b> de la cadena de medición. Hoy el instrumento de registro es el navegador.</div></div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">3</div>
+</section>
+
+<!-- 4 · BLE no es el BT de los auriculares -->
+<section class="slide gris">
+  <div class="kicker">2 · BLE y GATT</div>
+  <h1>BLE no es el Bluetooth de los auriculares</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">anuncia</div><h3 class="chica">Advertising</h3>
+      <p>El periférico grita "acá estoy" varias veces por segundo. Nadie necesita emparejarse para escucharlo.</p></div>
+    <div class="card"><div class="ck">expone</div><h3 class="chica">GATT</h3>
+      <p>Sus datos viven en una base jerárquica: <b>servicios</b> que agrupan <b>características</b>.</p></div>
+    <div class="card"><div class="ck">conecta</div><h3 class="chica">1 a 1</h3>
+      <p>Un central se conecta y el anuncio se apaga: nadie más lo ve hasta que se suelte.</p></div>
+  </div>
+  <p class="mt">Pensado para sensores a pilas: tramas cortas, consumo mínimo, datos estructurados.
+  El Bluetooth "clásico" de audio es otro protocolo que comparte la radio.</p>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">4</div>
+</section>
+
+<!-- 5 · Nuestro GATT -->
+<section class="slide">
+  <div class="kicker">2 · BLE y GATT</div>
+  <h1>Nuestro GATT viene de fábrica</h1>
+  <table>
+    <tr><th>Pieza</th><th>Valor</th><th>Qué significa</th></tr>
+    <tr><td>Servicio</td><td class="mono">0x181A</td><td>Environmental Sensing (estándar Bluetooth SIG)</td></tr>
+    <tr><td>Característica</td><td class="mono">0x2A6E</td><td>Temperature — el canal 1</td></tr>
+    <tr><td>Característica</td><td class="mono">0x2B04</td><td>Percentage 8 — el pote: <b>un canal = una característica</b></td></tr>
+    <tr><td>Propiedades</td><td class="mono">READ · NOTIFY</td><td>se puede leer, y además empuja cada valor nuevo</td></tr>
+    <tr><td>Formatos</td><td class="mono">sint16 × 0,01 °C · uint8 × 0,5 %</td><td>little-endian, definidos por la especificación</td></tr>
+  </table>
+  <div class="tip"><span class="foco">◆</span><div><b>UUIDs estándar = interoperabilidad por especificación.</b>
+  Cualquier app del mundo que conozca la spec entiende a nuestro sensor sin leer nuestro código — la misma
+  idea de SCPI en los instrumentos de banco.</div></div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">5</div>
+</section>
+
+<!-- 6 · Notify -->
+<section class="slide">
+  <div class="kicker">2 · BLE y GATT</div>
+  <h1>Notify: el sensor empuja</h1>
+  <div class="cards c2">
+    <div class="card oscuro"><div class="ck">push · hoy</div><h3>Notificación</h3>
+      <p>El cliente se suscribe una vez (descriptor <b>CCCD</b>) y después recibe cada valor nuevo
+      sin preguntar. Latencia mínima, cero pedidos de más.</p></div>
+    <div class="card"><div class="ck">pull · proyecto 02</div><h3>Polling</h3>
+      <p>El cliente pregunta cada 1 s aunque no haya nada nuevo.
+      Simple y universal, pero gasta pedidos y suma latencia.</p></div>
+  </div>
+  <p class="mt">La pregunta de diseño que vuelve en toda la materia: <b>¿quién decide cuándo viaja el dato,
+  el instrumento o el que lo consume?</b></p>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">6</div>
+</section>
+
+<!-- 7 · El dato binario -->
+<section class="slide gris">
+  <div class="kicker">3 · El dato binario</div>
+  <h1>Dos bytes, nada de texto</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">medición</div><div class="grande">24,31 °C</div></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">× 100</div><div class="grande">2431</div></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">sint16 LE</div><div class="grande mono">7F 09</div></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">aire</div><h3>2 bytes</h3><p>contra ~6 del texto "24.31\n"</p></div>
+  </div>
+  <p class="mt">El precio del binario: <b>sin la especificación, esos bytes no significan nada.</b>
+  El texto se lee con los ojos; el binario exige un contrato. Elegir formato es elegir con quién vas a hablar.</p>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">7</div>
+</section>
+
+<!-- 8 · Web Bluetooth -->
+<section class="slide">
+  <div class="kicker">4 · Web Bluetooth</div>
+  <h1>El navegador habla BLE</h1>
+  <div class="cards c4">
+    <div class="card"><div class="ck">requisito</div><h3 class="chica">HTTPS</h3><p>solo en contexto seguro — por eso la app vive en GitHub Pages</p></div>
+    <div class="card"><div class="ck">requisito</div><h3 class="chica">Un gesto</h3><p>la conexión arranca con un click del usuario, nunca sola</p></div>
+    <div class="card"><div class="ck">soporte</div><h3 class="chica">Chrome · Edge</h3><p>en PC y Android</p></div>
+    <div class="card"><div class="ck">no está</div><h3 class="chica">iOS / Safari</h3><p>estándar propuesto vs. adopción real — tema de discusión</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>El usuario <b>elige el dispositivo en un diálogo del navegador</b>:
+  la página nunca ve los equipos que no le mostraste. Seguridad por diseño, no por confianza.</div></div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">8</div>
+</section>
+
+<!-- 9 · Código firmware -->
+<section class="slide">
+  <div class="kicker">4 · Web Bluetooth · el lado del ESP32</div>
+  <h1>Firmware: publicar y notificar</h1>
+  <div class="codigo compacto"><span class="cm">// setup(): el GATT se arma una vez</span>
+BLEDevice::init(<span class="st">"EL831-Logger"</span>);
+BLEService* servicio = servidor-&gt;createService(BLEUUID((uint16_t)<span class="kw">0x181A</span>));
+caracTemp = servicio-&gt;createCharacteristic(BLEUUID((uint16_t)<span class="kw">0x2A6E</span>),
+                PROPERTY_READ | <span class="kw">PROPERTY_NOTIFY</span>);
+caracTemp-&gt;addDescriptor(new BLE2902());   <span class="cm">// CCCD: habilita suscripciones</span>
+
+<span class="cm">// loop(), una vez por segundo: sint16 en centésimas, little-endian</span>
+int16_t centesimas = (int16_t)lroundf(t * <span class="kw">100.0f</span>);
+caracTemp-&gt;setValue((uint8_t*)&amp;centesimas, sizeof(centesimas));
+if (hayCliente) caracTemp-&gt;<span class="kw">notify</span>();
+
+<span class="cm">// el canal 2 es OTRA característica: 0x2B04, uint8 × 0,5 %</span>
+uint8_t medios = (uint8_t)lroundf(pote * <span class="kw">2.0f</span>);
+caracPote-&gt;setValue(&amp;medios, 1);  if (hayCliente) caracPote-&gt;<span class="kw">notify</span>();</div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">9</div>
+</section>
+
+<!-- 10 · Código app -->
+<section class="slide">
+  <div class="kicker">4 · Web Bluetooth · el lado del navegador</div>
+  <h1>La app: todo el protocolo en 10 líneas</h1>
+  <div class="codigo">const disp = await navigator.bluetooth.<span class="kw">requestDevice</span>({
+  filters: [{ services: [<span class="st">'environmental_sensing'</span>] }]   <span class="cm">// el usuario elige</span>
+});
+const gatt = await disp.gatt.<span class="kw">connect</span>();
+const svc  = await gatt.getPrimaryService(<span class="st">'environmental_sensing'</span>);
+const ch   = await svc.getCharacteristic(<span class="st">'temperature'</span>);
+
+ch.addEventListener(<span class="st">'characteristicvaluechanged'</span>, e =&gt;
+  agregarMuestra(e.target.value.<span class="kw">getInt16</span>(0, true) / 100));  <span class="cm">// LE ÷ 100</span>
+await ch.<span class="kw">startNotifications</span>();
+
+<span class="cm">// el pote: igual, con getCharacteristic(0x2B04) y getUint8(0) ÷ 2</span></div>
+  <p class="mt">La página entera es un solo HTML sin dependencias: <b>leerla es parte del ejercicio</b>.</p>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">10</div>
+</section>
+
+<!-- 11 · Manos a la obra -->
+<section class="slide">
+  <div class="kicker">5 · Manos a la obra</div>
+  <h1>Cuatro pasos y registrando</h1>
+  <div class="cols">
+    <div class="cards pasos">
+      <div class="card"><div class="ck">1</div><p><b>Cablear</b>: DS18B20 en GPIO 4 (pull-up 4,7 kΩ) y pote al GPIO 34 (ADC1 · en C3: GPIO 3), extremos a 3V3 y GND.</p></div>
+      <div class="card"><div class="ck">2</div><p><b>PlatformIO → subir</b> el proyecto <span class="mono">esp32_ble</span>. Cambiar <span class="mono">NOMBRE_BLE</span> por el del grupo.</p></div>
+      <div class="card"><div class="ck">3</div><p><b>Abrir la app</b> (GitHub Pages) en Chrome/Edge y tocar <b>Conectar</b>.</p></div>
+      <div class="card"><div class="ck">4</div><p><b>Registrar y exportar</b>: gráfico en vivo → Descargar CSV.</p></div>
+    </div>
+    <div>
+      <img class="esquema" src="../docs/img/circuito-logger.svg" alt="Esquemático DS18B20">
+      <p style="font-size:24px;color:var(--mute);margin-top:12px">Sin sensor: <span class="mono">SIMULAR = true</span> en el firmware, o <span class="mono">?demo=1</span> en la app.</p>
+    </div>
+  </div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">11</div>
+</section>
+
+<!-- 12 · Timestamp -->
+<section class="slide gris">
+  <div class="kicker">6 · Discusión</div>
+  <h1>¿Qué hora es? La pone el navegador</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">esp32</div><h3>Mide a su ritmo</h3><p>una muestra por segundo… según <b>su</b> reloj, sin fecha ni hora</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">ble</div><h3>Transporta</h3><p>con el retardo y el jitter del intervalo de conexión</p></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">navegador</div><h3>Fecha y hora</h3><p>el timestamp se estampa <b>al llegar</b>, no al medir</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>Mirar el CSV: ¿las muestras están cada 1,000 s exactos?
+  <b>El jitter del enlace queda impreso en el registro.</b> ¿Cuánto vale? ¿Importa para una temperatura? ¿Y para una vibración?</div></div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">12</div>
+</section>
+
+<!-- 13 · Experimentos -->
+<section class="slide">
+  <div class="kicker">6 · Experimentos</div>
+  <h1>Para hacer en el banco</h1>
+  <div class="cards c2">
+    <div class="card"><div class="ck">a</div><h3 class="chica">Apretar el sensor y girar el pote</h3><p>las dos curvas responden: una lenta (térmica), otra instantánea (posición). Dos físicas, un logger.</p></div>
+    <div class="card"><div class="ck">b</div><h3 class="chica">Caminar hasta perder el enlace</h3><p>¿a cuántos metros corta? ¿La app lo marca? ¿Qué pasó con el registro?</p></div>
+    <div class="card"><div class="ck">c</div><h3 class="chica">Conectarse al ESP32 del vecino</h3><p>no se puede mientras el dueño esté conectado: BLE es 1 a 1. ¿Por qué?</p></div>
+    <div class="card"><div class="ck">d</div><h3 class="chica">Exportar y analizar</h3><p>abrir el CSV en una planilla: media, desvío y el intervalo real entre muestras.</p></div>
+  </div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">13</div>
+</section>
+
+<!-- 14 · Errores típicos -->
+<section class="slide">
+  <div class="kicker">6 · Antes de pedir ayuda</div>
+  <h1>Errores típicos</h1>
+  <div class="cards c2">
+    <div class="card"><h3 class="chica">"Web Bluetooth no disponible"</h3><p>la página está en <span class="mono">http://</span>, o es iPhone/Safari. Chrome o Edge, y HTTPS.</p></div>
+    <div class="card"><h3 class="chica">No aparece el dispositivo</h3><p>otro cliente ya está conectado (1 a 1), el ESP32 sin alimentar, o el Bluetooth de la PC apagado.</p></div>
+    <div class="card"><h3 class="chica">Marca −127 o ERROR</h3><p>falta el pull-up de 4,7 kΩ o DATA está en otro GPIO. Mirar el Serial Monitor: es el testigo.</p></div>
+    <div class="card"><h3 class="chica">No compila: no entra en flash</h3><p>la pila BLE es grande — el proyecto ya trae <span class="mono">huge_app.csv</span>; no borrar esa línea.</p></div>
+  </div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">14</div>
+</section>
+
+<!-- 15 · Lo que queda picando -->
+<section class="slide gris">
+  <div class="kicker">Cierre</div>
+  <h1>Lo que queda picando</h1>
+  <div class="cards c2">
+    <div class="card"><div class="ck">pregunta</div><h3 class="chica">¿Cómo sabrías que se perdió una muestra?</h3>
+      <p>No hay numerador de secuencia. ¿Dónde lo agregarías… sin romper la especificación de <span class="mono">0x2A6E</span>?</p></div>
+    <div class="card"><div class="ck">pregunta</div><h3 class="chica">¿Y si quieren mirar dos personas?</h3>
+      <p>BLE es 1 a 1. Para compartir el dato hace falta otra topología…</p></div>
+  </div>
+  <div class="tip" style="margin-top:56px"><span class="foco">▶</span><div><b>Próxima clase — Logger WiFi:</b>
+  el instrumento crea su propia red, sirve su propia app y atiende varios clientes a la vez.
+  Mismo sensor, misma página: solo cambia el enlace.</div></div>
+  <div class="pie">Proyecto 01 · Logger BLE · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">15</div>
+</section>
+
+<!-- 16 · Cierre -->
+<section class="slide oscura">
+  <div class="centrar">
+    <div class="kicker">Proyecto 01 · Logger BLE</div>
+    <h1 style="font-size:100px">El navegador es<br>el instrumento</h1>
+    <p class="sub">App: <b>fernandorvs.github.io/Datalogger-Web-ESP32-2026</b><br>
+    Código y guías: <b>github.com/fernandorvs/Datalogger-Web-ESP32-2026</b></p>
+  </div>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "01 Logger BLE",
+			"path": "01-ble/esp32_ble"
+		},
+		{
+			"name": "02 Logger WiFi",
+			"path": "02-wifi/esp32_wifi"
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logger BLE · EL831</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icono-192.png">
+<link rel="apple-touch-icon" href="icons/icono-192.png">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<style>
+  :root {
+    color-scheme: light;
+    --plano:        #f9f9f7;  /* plano de página */
+    --superficie:   #fcfcfb;  /* tarjetas */
+    --tinta-1:      #0b0b0b;
+    --tinta-2:      #52514e;
+    --tinta-mute:   #898781;
+    --grilla:       #e1e0d9;
+    --eje:          #c3c2b7;
+    --borde:        rgba(11,11,11,0.10);
+    --serie:        #2a78d6;  /* slot 1 de la paleta (validada): temperatura */
+    --serie2:       #eb6834;  /* slot 2: potenciómetro */
+    --ok:           #0ca30c;
+    --critico:      #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plano:      #0d0d0d;
+      --superficie: #1a1a19;
+      --tinta-1:    #ffffff;
+      --tinta-2:    #c3c2b7;
+      --tinta-mute: #898781;
+      --grilla:     #2c2c2a;
+      --eje:        #383835;
+      --borde:      rgba(255,255,255,0.10);
+      --serie:      #3987e5;
+      --serie2:     #d95926;
+      --ok:         #0ca30c;
+      --critico:    #d03b3b;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plano:      #0d0d0d;
+    --superficie: #1a1a19;
+    --tinta-1:    #ffffff;
+    --tinta-2:    #c3c2b7;
+    --tinta-mute: #898781;
+    --grilla:     #2c2c2a;
+    --eje:        #383835;
+    --borde:      rgba(255,255,255,0.10);
+    --serie:      #3987e5;
+    --serie2:     #d95926;
+    --ok:         #0ca30c;
+    --critico:    #d03b3b;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--plano);
+    color: var(--tinta-1);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 20px 16px 40px;
+  }
+  .caja { max-width: 760px; margin: 0 auto; }
+
+  header { display: flex; align-items: baseline; justify-content: space-between;
+           gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  h1 { font-size: 20px; font-weight: 650; margin: 0; }
+  h1 small { color: var(--tinta-mute); font-weight: 500; }
+
+  .chip { display: inline-flex; align-items: center; gap: 7px;
+          font-size: 13px; color: var(--tinta-2);
+          border: 1px solid var(--borde); border-radius: 999px;
+          padding: 4px 12px; background: var(--superficie); }
+  .chip .punto { width: 9px; height: 9px; border-radius: 50%;
+                 background: var(--tinta-mute); }
+  .chip.ok .punto      { background: var(--ok); }
+  .chip.error .punto   { background: var(--critico); }
+
+  .tarjeta { background: var(--superficie); border: 1px solid var(--borde);
+             border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
+
+  .hero { display: flex; align-items: baseline; gap: 10px 28px; flex-wrap: wrap; }
+  .hero .canal { display: flex; align-items: baseline; gap: 10px; }
+  .hero .nombre { font-size: 13px; color: var(--tinta-mute); }
+  .hero .valor { font-size: 50px; font-weight: 650; letter-spacing: -0.5px; }
+  .hero .unidad { font-size: 22px; color: var(--tinta-2); font-weight: 500; }
+  .hero .detalle { font-size: 13px; color: var(--tinta-mute); margin-left: auto;
+                   text-align: right; }
+
+  .titulo-viz { font-size: 13px; color: var(--tinta-2); margin: 0 0 10px; }
+  .lienzo { position: relative; }
+  canvas { display: block; width: 100%; height: 190px; }
+  .tooltip { position: absolute; pointer-events: none; display: none;
+             background: var(--superficie); border: 1px solid var(--borde);
+             border-radius: 6px; padding: 5px 9px; font-size: 12.5px;
+             color: var(--tinta-1); box-shadow: 0 2px 8px rgba(0,0,0,.12);
+             white-space: nowrap; }
+  .tooltip b { font-variant-numeric: tabular-nums; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: var(--superficie); border: 1px solid var(--borde);
+          border-radius: 10px; padding: 12px 14px; }
+  .stat .k { font-size: 12px; color: var(--tinta-mute); }
+  .stat .v { font-size: 22px; font-weight: 650; margin-top: 2px; }
+  .stat .v small { font-size: 13px; color: var(--tinta-2); font-weight: 500; }
+
+  .acciones { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+  button { font: 600 14px/1 system-ui, -apple-system, "Segoe UI", sans-serif;
+           border-radius: 8px; padding: 11px 18px; cursor: pointer;
+           border: 1px solid var(--borde);
+           background: var(--superficie); color: var(--tinta-1); }
+  button.primario { background: var(--serie); border-color: var(--serie); color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+
+  .aviso { border-left: 3px solid var(--critico); padding: 10px 14px;
+           background: var(--superficie); border-radius: 0 8px 8px 0;
+           font-size: 14px; color: var(--tinta-2); margin-bottom: 14px; }
+
+  details { margin-top: 4px; }
+  summary { cursor: pointer; font-size: 13px; color: var(--tinta-2); }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13.5px; }
+  th { text-align: left; color: var(--tinta-mute); font-weight: 500;
+       border-bottom: 1px solid var(--grilla); padding: 4px 6px; }
+  td { padding: 4px 6px; border-bottom: 1px solid var(--grilla);
+       font-variant-numeric: tabular-nums; }
+
+  footer { font-size: 12.5px; color: var(--tinta-mute); margin-top: 24px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="caja">
+
+  <header>
+    <h1>Logger BLE <small>· EL831 Instrumentación Electrónica</small></h1>
+    <span class="chip" id="estado"><span class="punto"></span><span id="estadoTxt">Desconectado</span></span>
+  </header>
+
+  <div class="aviso" id="avisoCompat" hidden>
+    Este navegador no tiene <b>Web Bluetooth</b>. Usar <b>Chrome o Edge</b> en
+    PC o Android, desde una página <b>https</b> (en iPhone/Safari no está
+    disponible). Para ver la interfaz sin hardware: agregar <code>?demo=1</code>
+    a la URL.
+  </div>
+
+  <div class="tarjeta hero">
+    <span class="canal"><span class="nombre">Temperatura</span>
+      <span class="valor" id="valorTemp">—</span><span class="unidad">°C</span></span>
+    <span class="canal"><span class="nombre">Potenciómetro</span>
+      <span class="valor" id="valorPote">—</span><span class="unidad">%</span></span>
+    <span class="detalle" id="detalle">esperando conexión</span>
+  </div>
+
+  <div class="tarjeta">
+    <p class="titulo-viz">Temperatura [°C] — últimos 3 minutos</p>
+    <div class="lienzo">
+      <canvas id="gTemp"></canvas>
+      <div class="tooltip" id="tipTemp"></div>
+    </div>
+  </div>
+
+  <div class="tarjeta">
+    <p class="titulo-viz">Potenciómetro [%] — últimos 3 minutos</p>
+    <div class="lienzo">
+      <canvas id="gPote"></canvas>
+      <div class="tooltip" id="tipPote"></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Muestras</div><div class="v" id="stN">0</div></div>
+    <div class="stat"><div class="k">Temp media</div><div class="v" id="stTemp">— <small>°C</small></div></div>
+    <div class="stat"><div class="k">Pote medio</div><div class="v" id="stPote">— <small>%</small></div></div>
+    <div class="stat"><div class="k">Duración</div><div class="v" id="stDur">—</div></div>
+  </div>
+
+  <div class="acciones">
+    <button class="primario" id="btnConectar">Conectar por Bluetooth</button>
+    <button id="btnDesconectar" disabled>Desconectar</button>
+    <button id="btnCsv" disabled>Descargar CSV</button>
+    <button id="btnBorrar" disabled>Borrar registro</button>
+  </div>
+
+  <details>
+    <summary>Ver últimas muestras (tabla)</summary>
+    <table>
+      <thead><tr><th>Hora</th><th>Temp [°C]</th><th>Pote [%]</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </details>
+
+  <footer>
+    EL831 Instrumentación Electrónica · 2026 ·
+    <a href="https://github.com/fernandorvs/Datalogger-Web-ESP32-2026">código fuente</a>
+  </footer>
+</div>
+
+<script>
+'use strict';
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+if (params.get('tema')) document.documentElement.dataset.theme =
+  params.get('tema') === 'oscuro' ? 'dark' : 'light';
+
+const horaDe = ms => new Date(ms).toLocaleTimeString('es-AR', { hour12: false });
+
+/* ---------- registro (el "logger" vive acá) ---------- */
+const muestras = [];               // {t: epoch ms, temp: °C, pote: %}
+const MAX_MUESTRAS = 36000;        // ~10 h a 1 muestra/s
+
+function agregarMuestra(temp, pote) {
+  muestras.push({ t: Date.now(), temp, pote });
+  if (muestras.length > MAX_MUESTRAS) muestras.shift();
+  actualizarUI();
+}
+
+function actualizarUI() {
+  const n = muestras.length;
+  if (n) {
+    const ult = muestras[n - 1];
+    $('valorTemp').textContent = ult.temp.toFixed(2);
+    $('valorPote').textContent = ult.pote.toFixed(1);
+    $('detalle').textContent = 'última muestra ' + horaDe(ult.t);
+    let sT = 0, sP = 0;
+    for (const m of muestras) { sT += m.temp; sP += m.pote; }
+    $('stTemp').innerHTML = (sT / n).toFixed(2) + ' <small>°C</small>';
+    $('stPote').innerHTML = (sP / n).toFixed(1) + ' <small>%</small>';
+    const seg = Math.round((ult.t - muestras[0].t) / 1000);
+    $('stDur').textContent =
+      String(Math.floor(seg / 60)).padStart(2, '0') + ':' + String(seg % 60).padStart(2, '0');
+  }
+  $('stN').textContent = n;
+  $('btnCsv').disabled = $('btnBorrar').disabled = !n;
+  // tabla: últimas 10
+  $('tbody').innerHTML = muestras.slice(-10).reverse().map(m =>
+    `<tr><td>${horaDe(m.t)}</td><td>${m.temp.toFixed(2)}</td><td>${m.pote.toFixed(1)}</td></tr>`).join('');
+  dibujarTodo();
+}
+
+/* ---------- gráficos (canvas, sin librerías) ---------- */
+const VENTANA_MS = 3 * 60 * 1000;
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function crearGrafico(cfg) {
+  const cv = $(cfg.canvas), ctx = cv.getContext('2d'), tip = $(cfg.tip);
+  let cursorX = null;
+
+  function dibujar() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== W * dpr || cv.height !== H * dpr) { cv.width = W * dpr; cv.height = H * dpr; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    const mL = 44, mR = 14, mT = 8, mB = 22;
+    const pw = W - mL - mR, ph = H - mT - mB;
+    const ahora = Date.now(), t0 = ahora - VENTANA_MS;
+    const vis = muestras.filter(m => m.t >= t0);
+
+    let [yMin, yMax] = cfg.yDefecto;
+    if (cfg.yFijo) { [yMin, yMax] = cfg.yFijo; }
+    else if (vis.length) {
+      yMin = Math.min(...vis.map(cfg.valor)); yMax = Math.max(...vis.map(cfg.valor));
+      const centro = (yMin + yMax) / 2, ancho = Math.max(yMax - yMin, cfg.yMinSpan) * 1.25;
+      yMin = centro - ancho / 2; yMax = centro + ancho / 2;
+    }
+    const x = t => mL + (t - t0) / VENTANA_MS * pw;
+    const y = v => mT + (1 - (v - yMin) / (yMax - yMin)) * ph;
+
+    ctx.font = '11.5px system-ui, sans-serif';
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let i = 0; i <= 4; i++) {
+      const v = yMin + (yMax - yMin) * i / 4, yy = y(v);
+      ctx.strokeStyle = css('--grilla'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mL, yy); ctx.lineTo(W - mR, yy); ctx.stroke();
+      ctx.fillStyle = css('--tinta-mute');
+      ctx.fillText(v.toFixed(cfg.decEje), mL - 6, yy);
+    }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const primerMin = Math.ceil(t0 / 60000) * 60000;
+    for (let t = primerMin; t <= ahora; t += 60000) {
+      ctx.fillStyle = css('--tinta-mute');
+      ctx.fillText(horaDe(t).slice(0, 5), x(t), H - mB + 5);
+    }
+    ctx.strokeStyle = css('--eje'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(mL, mT + ph); ctx.lineTo(W - mR, mT + ph); ctx.stroke();
+
+    if (!vis.length) {
+      ctx.fillStyle = css('--tinta-mute'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('sin datos todavía', mL + pw / 2, mT + ph / 2);
+      return;
+    }
+
+    const color = css(cfg.color);
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.beginPath();
+    vis.forEach((m, i) => { const xx = x(m.t), yy = y(cfg.valor(m)); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); });
+    ctx.stroke();
+
+    const ult = vis[vis.length - 1];
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(x(ult.t), y(cfg.valor(ult)), 4, 0, 7); ctx.fill();
+    ctx.strokeStyle = css('--superficie'); ctx.lineWidth = 2; ctx.stroke();
+
+    if (cursorX !== null && cursorX >= mL && cursorX <= W - mR) {
+      let cerca = vis[0];
+      for (const m of vis) if (Math.abs(x(m.t) - cursorX) < Math.abs(x(cerca.t) - cursorX)) cerca = m;
+      const cx = x(cerca.t), cy = y(cfg.valor(cerca));
+      ctx.strokeStyle = css('--eje'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(cx, mT); ctx.lineTo(cx, mT + ph); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(cx, cy, 4.5, 0, 7); ctx.fill();
+      ctx.strokeStyle = css('--superficie'); ctx.lineWidth = 2; ctx.stroke();
+      tip.innerHTML = horaDe(cerca.t) + ' · <b>' +
+        cfg.valor(cerca).toFixed(cfg.dec) + ' ' + cfg.unidad + '</b>';
+      tip.style.display = 'block';
+      const tw = tip.offsetWidth;
+      tip.style.left = Math.min(Math.max(cx - tw / 2, 0), W - tw) + 'px';
+      tip.style.top = Math.max(cy - 40, 0) + 'px';
+    } else {
+      tip.style.display = 'none';
+    }
+  }
+
+  cv.addEventListener('mousemove', e => { cursorX = e.offsetX; dibujar(); });
+  cv.addEventListener('mouseleave', () => { cursorX = null; dibujar(); });
+  return { dibujar };
+}
+
+const gTemp = crearGrafico({ canvas: 'gTemp', tip: 'tipTemp', valor: m => m.temp,
+  unidad: '°C', dec: 2, decEje: 1, color: '--serie', yDefecto: [20, 30], yMinSpan: 1 });
+const gPote = crearGrafico({ canvas: 'gPote', tip: 'tipPote', valor: m => m.pote,
+  unidad: '%', dec: 1, decEje: 0, color: '--serie2', yDefecto: [0, 100], yFijo: [0, 100] });
+
+function dibujarTodo() { gTemp.dibujar(); gPote.dibujar(); }
+window.addEventListener('resize', dibujarTodo);
+setInterval(dibujarTodo, 1000);    // la ventana de 3 min avanza sola
+
+/* ---------- estado ---------- */
+function estado(clase, texto) {
+  $('estado').className = 'chip' + (clase ? ' ' + clase : '');
+  $('estadoTxt').textContent = texto;
+}
+
+/* ---------- CSV / borrar ---------- */
+$('btnCsv').onclick = () => {
+  const filas = ['fecha_iso,temp_c,pote_pct'];
+  for (const m of muestras)
+    filas.push(new Date(m.t).toISOString() + ',' + m.temp.toFixed(2) + ',' + m.pote.toFixed(1));
+  const blob = new Blob([filas.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'logger-ble-' + new Date().toISOString().slice(0, 19).replaceAll(':', '-') + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+$('btnBorrar').onclick = () => { muestras.length = 0;
+  $('valorTemp').textContent = $('valorPote').textContent = '—';
+  $('detalle').textContent = 'registro borrado'; actualizarUI(); };
+
+/* ---------- conexión BLE (Web Bluetooth) ---------- */
+let dispositivo = null;
+let ultimoPote = 0;    // el pote notifica primero; el par se registra con la temperatura
+
+async function conectar() {
+  try {
+    estado('', 'Buscando…');
+    dispositivo = await navigator.bluetooth.requestDevice({
+      filters: [{ services: ['environmental_sensing'] }]
+    });
+    dispositivo.addEventListener('gattserverdisconnected', () => {
+      estado('error', 'Desconectado');
+      $('btnConectar').disabled = false; $('btnDesconectar').disabled = true;
+    });
+    estado('', 'Conectando…');
+    const gatt = await dispositivo.gatt.connect();
+    const servicio = await gatt.getPrimaryService('environmental_sensing');
+
+    // canal 2: 0x2B04 Percentage 8 — uint8 con resolución 0,5 % (valor ÷ 2)
+    const cPote = await servicio.getCharacteristic(0x2B04);
+    cPote.addEventListener('characteristicvaluechanged', e => {
+      ultimoPote = e.target.value.getUint8(0) / 2;
+    });
+    await cPote.startNotifications();
+
+    // canal 1: 0x2A6E Temperature — sint16 little-endian, centésimas de °C
+    const cTemp = await servicio.getCharacteristic(0x2A6E);
+    cTemp.addEventListener('characteristicvaluechanged', e => {
+      agregarMuestra(e.target.value.getInt16(0, true) / 100, ultimoPote);
+    });
+    await cTemp.startNotifications();
+
+    estado('ok', 'Conectado · ' + (dispositivo.name || 'ESP32'));
+    $('btnConectar').disabled = true; $('btnDesconectar').disabled = false;
+  } catch (err) {
+    estado('error', err.name === 'NotFoundError' ? 'Cancelado' : 'Error');
+    console.error(err);
+  }
+}
+
+$('btnConectar').onclick = conectar;
+$('btnDesconectar').onclick = () => dispositivo && dispositivo.gatt.disconnect();
+
+/* ---------- modo demo (sin hardware): ?demo=1 ---------- */
+if (params.get('demo')) {
+  estado('ok', 'DEMO · datos simulados');
+  $('btnConectar').disabled = true;
+  setInterval(() => {
+    const fase = (Date.now() % 60000) / 60000 * 2 * Math.PI;
+    const f = Date.now() % 90000;
+    const pote = (f < 45000 ? f / 450 : (90000 - f) / 450) + (Math.random() - 0.5);
+    agregarMuestra(25 + 3 * Math.sin(fase) + (Math.random() - 0.5) * 0.2,
+                   Math.min(100, Math.max(0, pote)));
+  }, 1000);
+} else if (!navigator.bluetooth) {
+  $('avisoCompat').hidden = false;
+  $('btnConectar').disabled = true;
+}
+
+actualizarUI();
+
+/* ---------- app instalable (PWA): el service worker da ícono propio y offline ---------- */
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

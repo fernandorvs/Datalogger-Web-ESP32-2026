@@ -1,0 +1,155 @@
+/* Estilo de slides — Datalogger Web ESP32 · EL831 2026
+   Mismo lenguaje visual que los slides de Sistemas Lógicos:
+   Space Grotesk (títulos) · IBM Plex Sans (texto) · JetBrains Mono (kickers/código) */
+
+@import url('fonts/fuentes.css');
+
+:root {
+  --navy:    #161F38;
+  --crema:   #F6F2E8;
+  --gris:    #ECEEF1;
+  --naranja: #D14D1E;
+  --tinta:   #16213A;
+  --cuerpo:  #3A4254;
+  --mute:    #8C8878;
+  --linea:   #DDD8C8;
+  --borde:   rgba(22, 31, 56, .10);
+  --verde:   #4E7A58;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+@page { size: 1920px 1080px; margin: 0; }
+
+body { font-family: 'IBM Plex Sans', sans-serif; }
+
+.slide {
+  width: 1920px; height: 1080px;
+  page-break-after: always; break-after: page;
+  position: relative; overflow: hidden;
+  background: var(--crema); color: var(--cuerpo);
+  padding: 110px 150px 0;
+}
+.slide.oscura { background: var(--navy); color: #B9C0D4; }
+.slide.gris   { background: var(--gris); }
+
+.kicker {
+  font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  font-size: 26px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--naranja); margin-bottom: 28px;
+}
+h1 {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 76px; line-height: 1.06; letter-spacing: -0.015em;
+  color: var(--tinta); margin-bottom: 48px;
+}
+.oscura h1 { color: var(--crema); font-size: 130px; margin-bottom: 44px; }
+
+p, li { font-size: 31px; line-height: 1.5; }
+p + p { margin-top: 26px; }
+b, strong { color: var(--tinta); }
+.oscura b, .oscura strong { color: var(--crema); }
+.sub { font-size: 40px; line-height: 1.45; max-width: 1250px; }
+
+/* ---------- tarjetas ---------- */
+.cards { display: grid; gap: 32px; }
+.c2 { grid-template-columns: repeat(2, 1fr); }
+.c3 { grid-template-columns: repeat(3, 1fr); }
+.c4 { grid-template-columns: repeat(4, 1fr); }
+.card {
+  background: #fff; border: 1.5px solid var(--borde); border-radius: 18px;
+  padding: 36px 40px;
+}
+.card .ck {
+  font-family: 'JetBrains Mono', monospace; font-size: 23px; font-weight: 700;
+  color: var(--naranja); margin-bottom: 14px;
+}
+.card h3 {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 37px; color: var(--tinta); line-height: 1.15;
+}
+.card h3.chica { font-size: 32px; }
+.card p { font-size: 27px; margin-top: 14px; }
+.card ul { margin: 16px 0 0 30px; }
+.card li { font-size: 27px; margin-top: 10px; }
+.card.oscuro { background: var(--navy); border-color: var(--navy); }
+.card.oscuro h3 { color: var(--crema); }
+.card.oscuro p { color: #B9C0D4; }
+.card.oscuro b, .card.oscuro strong { color: #fff; }
+.card .grande {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+  font-size: 58px; color: var(--tinta);
+}
+
+/* fila de flujo: tarjetas + flechas */
+.flujo { display: flex; align-items: stretch; gap: 24px; }
+.flujo .card { flex: 1; }
+.flecha {
+  align-self: center; color: var(--naranja); font-size: 64px; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; flex: 0 0 auto;
+}
+
+/* ---------- tip banner ---------- */
+.tip {
+  background: var(--navy); color: #E7E3D6; border-radius: 18px;
+  padding: 34px 42px; font-size: 30px; line-height: 1.5;
+  display: flex; gap: 28px; align-items: flex-start; margin-top: 44px;
+}
+.tip .foco { color: var(--naranja); font-size: 40px; line-height: 1.15; }
+.tip b { color: #fff; }
+
+/* ---------- tablas ---------- */
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; font-size: 29px; color: var(--tinta);
+  border-bottom: 2.5px solid var(--cuerpo); padding: 16px 20px 14px;
+}
+td { font-size: 29px; padding: 20px; border-bottom: 1.5px solid var(--linea); }
+td:first-child { color: var(--tinta); }
+.mono, code {
+  font-family: 'JetBrains Mono', monospace; font-size: .92em;
+}
+
+/* ---------- código ---------- */
+.codigo {
+  background: var(--navy); border-radius: 18px; padding: 40px 48px;
+  font-family: 'JetBrains Mono', monospace; font-size: 26.5px; line-height: 1.62;
+  color: #E8E4D8; white-space: pre; overflow: hidden;
+}
+.codigo .cm { color: #7E89A8; }     /* comentario */
+.codigo .kw { color: #E8A062; }     /* palabra clave / resaltado */
+.codigo .st { color: #A8C686; }     /* string */
+
+/* ---------- portada ---------- */
+.puntos { display: flex; gap: 26px; margin-bottom: 150px; }
+.punto { width: 26px; height: 26px; border-radius: 50%; background: #39435F; }
+.punto.hecha { background: var(--verde); }
+.punto.actual { background: var(--naranja); }
+.oscura .kicker { margin-bottom: 36px; }
+.oscura .sub { color: #B9C0D4; }
+
+/* ---------- pie ---------- */
+.pie {
+  position: absolute; bottom: 62px; left: 150px;
+  font-size: 23px; color: var(--mute);
+}
+.oscura .pie { color: #6E7893; }
+.pie-num {
+  position: absolute; bottom: 62px; right: 150px;
+  font-family: 'JetBrains Mono', monospace; font-size: 23px; color: var(--mute);
+}
+
+/* utilitarios */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+.mt { margin-top: 44px; }
+.centrar { display: flex; flex-direction: column; justify-content: center; height: 100%; padding-bottom: 120px; }
+.naranja { color: var(--naranja); }
+img.esquema { width: 100%; }
+
+/* lista compacta de pasos (col. izquierda de "manos a la obra") */
+.pasos { grid-template-columns: 1fr; gap: 20px; }
+.pasos .card { padding: 20px 30px; }
+.pasos .card .ck { margin-bottom: 6px; }
+.pasos .card p { font-size: 25px; margin-top: 0; }
+
+/* bloque de código largo: tipografía apenas menor */
+.codigo.compacto { font-size: 23px; line-height: 1.55; padding: 32px 44px; }

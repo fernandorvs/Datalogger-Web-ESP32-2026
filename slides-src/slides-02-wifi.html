@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Slides · Proyecto 02 · Logger WiFi</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- 1 · Portada -->
+<section class="slide oscura">
+  <div style="height:70px"></div>
+  <div class="puntos"><span class="punto hecha"></span><span class="punto actual"></span></div>
+  <div class="kicker">Proyecto 02 · Datalogger Web</div>
+  <h1>Logger WiFi</h1>
+  <p class="sub">El instrumento crea su propia red, sirve su propia app y atiende
+  a varios a la vez. <b>El instrumento es el servidor.</b></p>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+<!-- 2 · Agenda -->
+<section class="slide">
+  <div class="kicker">Hoy</div>
+  <h1>Mismo logger, otra topología</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">1 · 15 min</div><h3>¿Qué cambia desde BLE?</h3></div>
+    <div class="card"><div class="ck">2 · 25 min</div><h3>Modo Access Point</h3></div>
+    <div class="card"><div class="ck">3 · 20 min</div><h3>HTTP, JSON y seq</h3></div>
+  </div>
+  <div class="cards c3" style="margin-top:32px">
+    <div class="card"><div class="ck">4 · 15 min</div><h3>La página vive en la flash</h3></div>
+    <div class="card"><div class="ck">5 · 45 min</div><h3>Manos a la obra</h3></div>
+    <div class="card"><div class="ck">6 · 30 min</div><h3>Experimentos y discusión</h3></div>
+  </div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">2</div>
+</section>
+
+<!-- 3 · Qué cambia -->
+<section class="slide">
+  <div class="kicker">1 · ¿Qué cambia desde BLE?</div>
+  <h1>Lo único nuevo es el enlace</h1>
+  <table>
+    <tr><th></th><th>01 · Bluetooth LE</th><th>02 · WiFi (Access Point)</th></tr>
+    <tr><td>Topología</td><td>punto a punto, un solo cliente</td><td><b>red propia, varios clientes a la vez</b></td></tr>
+    <tr><td>Entrega</td><td>push (notificación)</td><td><b>pull (polling 1/s)</b></td></tr>
+    <tr><td>Formato</td><td>binario con especificación</td><td><b>texto JSON autodescriptivo</b></td></tr>
+    <tr><td>Navegadores</td><td>Chrome/Edge — no iOS</td><td><b>todos, celular incluido</b></td></tr>
+    <tr><td>La app vive en…</td><td>internet (GitHub Pages)</td><td><b>el propio ESP32</b></td></tr>
+  </table>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">3</div>
+</section>
+
+<!-- 4 · Modo AP -->
+<section class="slide gris">
+  <div class="kicker">2 · Modo Access Point</div>
+  <h1>El instrumento ES la red</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">publica</div><h3 class="chica">SSID propio</h3>
+      <p><span class="mono">EL831-G3</span>: el ESP32 aparece en la lista de redes como cualquier router.</p></div>
+    <div class="card"><div class="ck">reparte</div><h3 class="chica">DHCP</h3>
+      <p>le da una dirección IP a cada cliente que se conecta, sin configurar nada.</p></div>
+    <div class="card"><div class="ck">atiende</div><h3 class="chica">192.168.4.1</h3>
+      <p>el instrumento vive siempre en la misma dirección de su propia red.</p></div>
+  </div>
+  <p class="mt">Hasta ahora el ESP32 se colgaba de una red ajena (modo <b>estación</b>). En modo <b>AP</b> no
+  depende de la red del laboratorio ni de internet: es la arquitectura de los instrumentos de campo
+  configurables por WiFi.</p>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">4</div>
+</section>
+
+<!-- 5 · Mixed content -->
+<section class="slide">
+  <div class="kicker">2 · Modo Access Point</div>
+  <h1>¿Por qué la app no está en internet?</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">https</div><h3 class="chica">Página en Pages</h3><p>contexto seguro, candadito</p></div>
+    <div class="flecha" style="color:#C03B3B">✕</div>
+    <div class="card"><div class="ck">http</div><h3 class="chica">fetch a 192.168.4.1</h3><p><b>bloqueado</b>: <i>mixed content</i> — una página segura no puede pedir a un origen inseguro</p></div>
+  </div>
+  <div class="flujo mt">
+    <div class="card oscuro"><div class="ck">solución</div><h3>El ESP32 sirve su propia página</h3>
+      <p>página y datos salen del <b>mismo origen</b> — el problema desaparece, y queda una idea linda:
+      el "deploy" de la app es compilar el firmware.</p></div>
+  </div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">5</div>
+</section>
+
+<!-- 6 · HTTP JSON seq -->
+<section class="slide">
+  <div class="kicker">3 · HTTP, JSON y seq</div>
+  <h1>Preguntar una vez por segundo</h1>
+  <div class="codigo">GET /medicion                          <span class="cm">← el navegador pregunta (polling)</span>
+200 OK · application/json
+{<span class="st">"seq"</span>:123, <span class="st">"temp_c"</span>:24.31, <span class="st">"pote_pct"</span>:57.5}           <span class="cm">← el instrumento responde</span></div>
+  <div class="cards c3 mt">
+    <div class="card"><div class="ck">seq igual</div><p><b>misma medición</b> — se descarta, el sensor mide 1/s</p></div>
+    <div class="card"><div class="ck">seq +1</div><p><b>muestra nueva</b> — va al registro</p></div>
+    <div class="card"><div class="ck">seq salta</div><p><b>muestras perdidas</b> — el hueco queda contado</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>En BLE preguntábamos "¿cómo detectar una pérdida?".
+  Acá la respuesta vino en el payload: <b>un número de secuencia</b>. Texto legible + contador: la filosofía opuesta al binario con spec.</div></div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">6</div>
+</section>
+
+<!-- 7 · Página en flash -->
+<section class="slide gris">
+  <div class="kicker">4 · La página vive en la flash</div>
+  <h1>El ciclo de la app embebida</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">1 · editar</div><h3 class="chica mono">pagina.html</h3><p>un HTML común, dentro del proyecto</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">2 · probar</div><h3 class="chica mono">?demo=1</h3><p>doble click: anda en el navegador, sin ESP32</p></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">3 · compilar</div><h3>PlatformIO la embebe solo</h3><p><span class="mono">board_build.embed_txtfiles</span> la mete en la flash (~16 kB) — sin SD, sin filesystem, sin scripts</p></div>
+  </div>
+  <p class="mt">No hay paso de "deploy" de la app: <b>el build es el deploy</b>.</p>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">7</div>
+</section>
+
+<!-- 8 · Código firmware -->
+<section class="slide">
+  <div class="kicker">4 · El lado del ESP32</div>
+  <h1>Firmware: una red y dos rutas</h1>
+  <div class="codigo">WiFi.<span class="kw">softAP</span>(<span class="st">"EL831-G3"</span>, <span class="st">"el831logger"</span>);   <span class="cm">// la clave: 8+ caracteres</span>
+
+servidor.on(<span class="st">"/"</span>,         atenderRaiz);      <span class="cm">// sirve la página embebida</span>
+servidor.on(<span class="st">"/medicion"</span>, atenderMedicion);  <span class="cm">// sirve el JSON con seq</span>
+
+<span class="cm">// loop(): medir 1/s SIN delay(), para no frenar al servidor</span>
+servidor.<span class="kw">handleClient</span>();
+if (millis() &gt;= proximaMedicionMs) {
+  proximaMedicionMs = millis() + <span class="kw">1000</span>;
+  g_seq++;
+  g_temp_c   = medirTemperaturaC();
+  g_pote_pct = medirPotePct();      <span class="cm">// canal 2: ADC1 (34, o 3 en C3)</span>
+}</div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">8</div>
+</section>
+
+<!-- 9 · Código página -->
+<section class="slide">
+  <div class="kicker">4 · El lado del navegador</div>
+  <h1>La app: polling con memoria</h1>
+  <div class="codigo">const r = await <span class="kw">fetch</span>(<span class="st">'/medicion'</span>, { cache: <span class="st">'no-store'</span> });
+const j = await r.json();
+
+if (j.seq !== ultimoSeq) {                 <span class="cm">// ¿es una muestra nueva?</span>
+  if (j.seq &gt; ultimoSeq + 1)
+    console.warn(<span class="st">'muestras salteadas:'</span>, j.seq - ultimoSeq - 1);
+  ultimoSeq = j.seq;
+  <span class="kw">agregarMuestra</span>(j.temp_c, j.pote_pct);   <span class="cm">// timestamp: lo pone el navegador</span>
+}</div>
+  <p class="mt">El resto de la página es <b>idéntico al proyecto 01</b>: mismo gráfico, mismas estadísticas,
+  mismo CSV. Cambió el enlace; el logger ni se enteró.</p>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">9</div>
+</section>
+
+<!-- 10 · Manos a la obra -->
+<section class="slide">
+  <div class="kicker">5 · Manos a la obra</div>
+  <h1>Cuatro pasos y registrando</h1>
+  <div class="cols">
+    <div class="cards pasos">
+      <div class="card"><div class="ck">1</div><p><b>Cablear</b> el DS18B20 (GPIO 4 + pull-up) y el pote (GPIO 34 · en C3: GPIO 3, ADC1); cambiar <span class="mono">AP_SSID</span> por el del grupo.</p></div>
+      <div class="card"><div class="ck">2</div><p><b>PlatformIO → subir</b> el proyecto <span class="mono">esp32_wifi</span>.</p></div>
+      <div class="card"><div class="ck">3</div><p><b>Conectarse a la red del grupo</b> desde el celular o la PC (clave <span class="mono">el831logger</span>).</p></div>
+      <div class="card"><div class="ck">4</div><p><b>Abrir</b> <span class="mono">http://192.168.4.1</span> — el registro arranca solo.</p></div>
+    </div>
+    <div>
+      <img class="esquema" src="../docs/img/circuito-logger.svg" alt="Esquemático DS18B20">
+      <p style="font-size:24px;color:var(--mute);margin-top:12px">El celular va a avisar "red sin internet": <b>mantener la conexión</b> (o apagar datos móviles).</p>
+    </div>
+  </div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">10</div>
+</section>
+
+<!-- 11 · Experimentos -->
+<section class="slide">
+  <div class="kicker">6 · Experimentos</div>
+  <h1>Para hacer en el banco</h1>
+  <div class="cards c2">
+    <div class="card"><div class="ck">a</div><h3 class="chica">Dos celulares a la vez</h3><p>cada navegador arma SU registro. Comparar los CSV: mismo <span class="mono">seq</span>, distinto timestamp. ¿Por qué?</p></div>
+    <div class="card"><div class="ck">b</div><h3 class="chica">Pausar y reanudar</h3><p>al volver, <span class="mono">seq</span> saltó: el sensor nunca paró. ¿Dónde quedaron esas muestras?</p></div>
+    <div class="card"><div class="ck">c</div><h3 class="chica">Medir el alcance</h3><p>¿dónde corta WiFi? ¿Más o menos lejos que BLE? Anotar con qué obstáculos.</p></div>
+    <div class="card"><div class="ck">d</div><h3 class="chica">Bajar el período de polling</h3><p>a 500 y a 2000 ms en la página: mirar qué pasa con <span class="mono">seq</span> en cada caso.</p></div>
+  </div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">11</div>
+</section>
+
+<!-- 12 · Dónde registrar -->
+<section class="slide gris">
+  <div class="kicker">6 · Discusión</div>
+  <h1>¿Dónde debería vivir el registro?</h1>
+  <div class="cards c3">
+    <div class="card oscuro"><div class="ck">hoy</div><h3 class="chica">En el navegador</h3>
+      <p>simple, cero infraestructura — pero muere con la pestaña y cada cliente tiene SU copia.</p></div>
+    <div class="card"><div class="ck">alternativa</div><h3 class="chica">En el instrumento</h3>
+      <p>tarjeta SD: sobrevive a todo, pero hay que ir a buscarlo y administrar el espacio.</p></div>
+    <div class="card"><div class="ck">alternativa</div><h3 class="chica">En un servidor</h3>
+      <p>registro único y compartido, acceso remoto… acá empieza la <b>telemedida</b>.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>No hay respuesta correcta: hay <b>requisitos</b>.
+  ¿Cuánto vale perder una muestra? ¿Quién consume el dato y desde dónde? El transporte y el registro se eligen según el uso.</div></div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">12</div>
+</section>
+
+<!-- 13 · Errores típicos -->
+<section class="slide">
+  <div class="kicker">6 · Antes de pedir ayuda</div>
+  <h1>Errores típicos</h1>
+  <div class="cards c2">
+    <div class="card"><h3 class="chica">La red no aparece</h3><p>clave de menos de 8 caracteres: <span class="mono">softAP()</span> falla en silencio. El Serial Monitor lo delata.</p></div>
+    <div class="card"><h3 class="chica">El celular se desconecta solo</h3><p>por "red sin internet" — mantener conexión o apagar los datos móviles.</p></div>
+    <div class="card"><h3 class="chica">192.168.4.1 no responde</h3><p>seguís conectado a la red de siempre, no a la del ESP32.</p></div>
+    <div class="card"><h3 class="chica">Quisieron servirla desde Pages</h3><p>fetch bloqueado: <i>mixed content</i>. Es la trampa que justifica todo el diseño — dejala fallar una vez.</p></div>
+  </div>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">13</div>
+</section>
+
+<!-- 14 · La tabla del oral -->
+<section class="slide">
+  <div class="kicker">Cierre</div>
+  <h1>La tabla que hay que poder defender</h1>
+  <table>
+    <tr><th></th><th>01 · Bluetooth LE</th><th>02 · WiFi (AP)</th></tr>
+    <tr><td>¿Quién inicia?</td><td>el navegador elige el dispositivo</td><td>el navegador pide por HTTP</td></tr>
+    <tr><td>Entrega</td><td>push · notify</td><td>pull · polling con <span class="mono">seq</span></td></tr>
+    <tr><td>Clientes</td><td>uno</td><td>varios a la vez</td></tr>
+    <tr><td>Alcance típico</td><td>~10 m</td><td>~30–50 m</td></tr>
+    <tr><td>Consumo</td><td>muy bajo</td><td>medio/alto</td></tr>
+    <tr><td>Pérdidas</td><td>¿cómo detectarlas?</td><td><span class="mono">seq</span> las cuenta</td></tr>
+    <tr><td>Infraestructura</td><td>app en internet (HTTPS)</td><td>ninguna: el instrumento sirve todo</td></tr>
+  </table>
+  <div class="pie">Proyecto 02 · Logger WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">14</div>
+</section>
+
+<!-- 15 · Cierre -->
+<section class="slide oscura">
+  <div class="centrar">
+    <div class="kicker">Proyecto 02 · Logger WiFi</div>
+    <h1 style="font-size:100px">Mismo sensor, misma app,<br>otro enlace</h1>
+    <p class="sub">La comunicación es una <b>decisión de diseño</b>, no un accesorio.<br>
+    Código y guías: <b>github.com/fernandorvs/Datalogger-Web-ESP32-2026</b></p>
+  </div>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+</body>
+</html>
