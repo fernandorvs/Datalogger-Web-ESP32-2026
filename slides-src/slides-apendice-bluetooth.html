@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Slides · Apéndice · Historia del Bluetooth</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- 1 · Portada -->
+<section class="slide oscura">
+  <div style="height:150px"></div>
+  <div class="kicker">Apéndice · Datalogger Web</div>
+  <h1 style="font-size:110px">Historia del<br>Bluetooth</h1>
+  <p class="sub">De un rey vikingo del siglo X a medir temperatura desde una
+  pestaña del navegador: <b>por qué el protocolo es como es</b>.</p>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+<!-- 2 · El nombre -->
+<section class="slide">
+  <div class="kicker">1 · El nombre</div>
+  <h1>Un rey que unía reinos</h1>
+  <div class="cols">
+    <div>
+      <p><b>Harald "Blåtand" Gormsson</b> (≈958–986) unificó Dinamarca y
+      Noruega bajo una sola corona. "Blåtand" — <i>diente azul</i> — era su
+      apodo.</p>
+      <p>En 1997, <b>Jim Kardach</b> (Intel) leía sobre vikingos mientras
+      trabajaba en una radio que debía <b>unificar protocolos</b> entre PCs y
+      celulares. Propuso "Bluetooth" como nombre en clave… y el nombre
+      definitivo nunca llegó: el provisorio quedó para siempre.</p>
+      <p>El logo es la firma del rey: las <b>runas de sus iniciales H y B</b>
+      fundidas en un solo símbolo.</p>
+    </div>
+    <div style="text-align:center">
+      <svg viewBox="0 0 200 200" width="330" style="display:inline-block">
+        <circle cx="100" cy="100" r="92" fill="#16213A"/>
+        <g stroke="#F6F2E8" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <polyline points="100,28 100,172"/>
+          <polyline points="100,28 138,64 62,136"/>
+          <polyline points="100,172 138,136 62,64"/>
+        </g>
+      </svg>
+      <p style="font-size:24px;color:var(--mute);margin-top:10px">la runa de Harald: H + B</p>
+    </div>
+  </div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">2</div>
+</section>
+
+<!-- 3 · 1994, matar al cable -->
+<section class="slide gris">
+  <div class="kicker">2 · El origen</div>
+  <h1>1994, Lund: matar al cable</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">1994</div><h3 class="chica">Ericsson</h3>
+      <p><b>Jaap Haartsen</b> y Sven Mattisson buscan un radioenlace corto y
+      barato para conectar el auricular al celular sin cable.</p></div>
+    <div class="card"><div class="ck">1998</div><h3 class="chica">Nace el SIG</h3>
+      <p>Ericsson, IBM, Intel, Nokia y Toshiba fundan el <b>Bluetooth Special
+      Interest Group</b>: la spec no sería de una empresa, sino de un consorcio.</p></div>
+    <div class="card"><div class="ck">1999</div><h3 class="chica">Spec 1.0</h3>
+      <p>Primera especificación pública. Con problemas serios de
+      interoperabilidad — ninguna tecnología nace terminada.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>La decisión fundacional: <b>un estándar abierto gobernado
+  por consorcio</b>. Es la razón por la que hoy un ESP32 de 5 dólares y un iPhone hablan el mismo idioma.</div></div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">3</div>
+</section>
+
+<!-- 4 · La banda y el salto -->
+<section class="slide">
+  <div class="kicker">3 · La física</div>
+  <h1>Una banda libre… y sucia</h1>
+  <div class="cols">
+    <div>
+      <p>Bluetooth vive en <b>2,4 GHz</b>, la banda ISM: libre en todo el
+      mundo, sin licencia — y por eso <b>saturada</b>: WiFi, microondas,
+      teclados, vecinos.</p>
+      <p>La defensa: <b>salto de frecuencia</b> (FHSS) — el clásico salta
+      entre <b>79 canales de 1 MHz, 1600 veces por segundo</b>. Si un canal
+      está tomado, el próximo salto lo esquiva.</p>
+    </div>
+    <div class="card"><div class="ck">1942 · prehistoria</div><h3 class="chica">Hedy Lamarr y George Antheil</h3>
+      <p>La actriz e inventora patentó con el compositor un sistema de
+      <b>salto de frecuencia</b> para guiar torpedos sin interferencias
+      (patente US 2.292.387). La idea durmió décadas… y terminó en tu
+      bolsillo.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">4</div>
+</section>
+
+<!-- 5 · El clásico madura -->
+<section class="slide gris">
+  <div class="kicker">4 · El clásico</div>
+  <h1>Dos décadas de audio y streams</h1>
+  <table>
+    <tr><th>Año</th><th>Versión</th><th>Qué trajo</th></tr>
+    <tr><td>2001</td><td class="mono">1.1</td><td>la primera que realmente interoperaba</td></tr>
+    <tr><td>2004</td><td class="mono">2.0 + EDR</td><td>3 Mbit/s — nace el auricular estéreo</td></tr>
+    <tr><td>2007</td><td class="mono">2.1</td><td>emparejamiento simple y seguro (adiós "0000")</td></tr>
+    <tr><td>2009</td><td class="mono">3.0 + HS</td><td>transferencias grandes (delegando en WiFi)</td></tr>
+  </table>
+  <p class="mt">El clásico se consolidó como la radio del <b>audio y los streams</b>:
+  conexiones sostenidas, consumo pensado para baterías recargables.
+  Perfecto para auriculares — <b>imposible para un sensor a pila de botón</b>.</p>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">5</div>
+</section>
+
+<!-- 6 · El quiebre -->
+<section class="slide">
+  <div class="kicker">5 · El quiebre</div>
+  <h1>La pila de botón cambia todo</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">2006</div><h3 class="chica">Wibree</h3>
+      <p>Nokia presenta una radio ultraliviana para sensores: pocos bytes,
+      cada tanto, y a dormir.</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">2007</div><h3 class="chica">El SIG la adopta</h3>
+      <p>en vez de competir, Wibree entra a la familia Bluetooth.</p></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">2010</div><h3>Bluetooth 4.0: LE</h3>
+      <p><b>Low Energy no es una mejora: es OTRA radio</b> — 40 canales,
+      anuncios, atributos. Años de vida con una CR2032.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>Moraleja de ingeniería: cuando el requisito cambia de
+  <b>throughput</b> a <b>energía</b>, no se optimiza el diseño viejo — <b>se diseña de nuevo</b>. Clásico y LE
+  conviven en el mismo chip, pero no se hablan entre sí.</div></div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">6</div>
+</section>
+
+<!-- 7 · Clásico vs LE -->
+<section class="slide">
+  <div class="kicker">5 · El quiebre</div>
+  <h1>Clásico vs. Low Energy</h1>
+  <table>
+    <tr><th></th><th>Bluetooth clásico</th><th>Bluetooth Low Energy</th></tr>
+    <tr><td>Nació para</td><td>audio, streams, cables USB sin cable</td><td><b>sensores y estados</b></td></tr>
+    <tr><td>Canales</td><td>79 × 1 MHz</td><td>40 × 2 MHz (3 de anuncio)</td></tr>
+    <tr><td>Conexión</td><td>sostenida, emparejada</td><td>anuncia → conecta → ráfaga → duerme</td></tr>
+    <tr><td>Datos</td><td>perfiles de flujo (A2DP, HFP…)</td><td><b>GATT</b>: servicios y características</td></tr>
+    <tr><td>Consumo</td><td>recargable</td><td>años con pila de botón</td></tr>
+    <tr><td>Lo usamos en…</td><td>el parlante del aula</td><td><b>nuestro logger</b></td></tr>
+  </table>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">7</div>
+</section>
+
+<!-- 8 · GATT -->
+<section class="slide gris">
+  <div class="kicker">6 · Lo que heredamos</div>
+  <h1>GATT: los datos con estructura</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">jerarquía</div><h3 class="chica">Perfil → Servicio → Característica</h3>
+      <p>los datos del sensor no son un chorro de bytes: son una base de
+      datos chiquita y navegable.</p></div>
+    <div class="card"><div class="ck">catálogo</div><h3 class="chica">UUIDs estándar del SIG</h3>
+      <p>el consorcio publica el diccionario: <span class="mono">0x181A</span> es "sensado
+      ambiental" en cualquier rincón del planeta.</p></div>
+    <div class="card oscuro"><div class="ck">nuestro logger</div><h3 class="chica">0x2A6E · 0x2B04</h3>
+      <p>temperatura en <span class="mono">sint16 × 0,01 °C</span> y porcentaje en
+      <span class="mono">uint8 × 0,5 %</span> — formatos que no inventamos nosotros.</p></div>
+  </div>
+  <p class="mt">La herencia de 1998 sigue viva: <b>interoperabilidad por especificación</b>.
+  Nuestra app no conoce a nuestro firmware — conoce la spec, y con eso alcanza.</p>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">8</div>
+</section>
+
+<!-- 9 · BLE sigue creciendo -->
+<section class="slide">
+  <div class="kicker">7 · La expansión</div>
+  <h1>Y el LE se comió al mundo</h1>
+  <table>
+    <tr><th>Año</th><th>Versión</th><th>Qué trajo</th></tr>
+    <tr><td>2014</td><td class="mono">4.2</td><td>paquetes más grandes, privacidad de dirección, IPv6</td></tr>
+    <tr><td>2016</td><td class="mono">5.0</td><td>2 Mbit/s, largo alcance (Coded PHY), anuncios extendidos</td></tr>
+    <tr><td>2019</td><td class="mono">5.1</td><td>dirección de llegada (AoA/AoD): localización en interiores</td></tr>
+    <tr><td>2020+</td><td class="mono">5.2 → 5.4</td><td>LE Audio y Auracast, etiquetas electrónicas de góndola</td></tr>
+  </table>
+  <p class="mt">Hoy BLE está en bandas de actividad, balizas, llaves de auto, rastreadores
+  de equipaje, sensores industriales y hasta el rastreo de contactos de la
+  pandemia. <b>La radio de los sensores ganó por goleada.</b></p>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">9</div>
+</section>
+
+<!-- 10 · El navegador entra -->
+<section class="slide gris">
+  <div class="kicker">8 · La última milla</div>
+  <h1>Web Bluetooth: el navegador habla GATT</h1>
+  <div class="cols">
+    <div>
+      <p>Hacia <b>2016-2017</b>, Chrome implementa <b>Web Bluetooth</b>: una
+      API para que una página web se conecte a dispositivos GATT. De golpe,
+      "instalar la app del sensor" se volvió <b>abrir una URL</b>.</p>
+      <p>Con reglas estrictas heredadas de 20 años de lecciones: solo
+      <b>HTTPS</b>, solo tras un <b>gesto del usuario</b>, y el usuario
+      <b>elige el dispositivo</b> en un diálogo del navegador.</p>
+    </div>
+    <div class="card"><div class="ck">la grieta</div><h3 class="chica">Estándar propuesto ≠ adoptado</h3>
+      <p>Es una spec de <i>community group</i> del W3C: Chrome y Edge la
+      implementan; <b>Safari y Firefox la rechazan</b> por riesgo de
+      privacidad y <i>fingerprinting</i>. Por eso nuestra app BLE no corre en
+      iPhone — y la discusión sigue abierta.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">10</div>
+</section>
+
+<!-- 11 · Línea de tiempo -->
+<section class="slide">
+  <div class="kicker">9 · El mapa completo</div>
+  <h1>Mil años en una tabla</h1>
+  <table>
+    <tr><th>Año</th><th>Hito</th><th>Qué nos dejó</th></tr>
+    <tr><td>≈970</td><td>Harald Blåtand une reinos</td><td>el nombre y el logo</td></tr>
+    <tr><td>1942</td><td>Lamarr y Antheil patentan el salto de frecuencia</td><td>la defensa contra la interferencia</td></tr>
+    <tr><td>1994</td><td>Ericsson busca matar el cable del auricular</td><td>la radio corta y barata</td></tr>
+    <tr><td>1998</td><td>cinco empresas fundan el SIG</td><td>el estándar abierto</td></tr>
+    <tr><td>2010</td><td>Bluetooth 4.0 incorpora Low Energy</td><td>la radio de los sensores + GATT</td></tr>
+    <tr><td>2016</td><td>Chrome implementa Web Bluetooth</td><td>el navegador como instrumento</td></tr>
+    <tr><td><b>2026</b></td><td><b>nuestro logger en el banco</b></td><td>todo lo anterior, junto</td></tr>
+  </table>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">11</div>
+</section>
+
+<!-- 12 · Mapeo a nuestro banco -->
+<section class="slide gris">
+  <div class="kicker">9 · El mapa completo</div>
+  <h1>Cada pieza de nuestro logger tiene fecha</h1>
+  <div class="cards c2">
+    <div class="card"><div class="ck">1942 → 2,4 GHz</div><p>el ESP32 <b>salta de canal</b> para esquivar al WiFi del aula — la idea de Lamarr, automatizada.</p></div>
+    <div class="card"><div class="ck">2010 → advertising</div><p>el <b>anuncio</b> que filtra <span class="mono">requestDevice</span> por servicio <span class="mono">0x181A</span> es BLE puro.</p></div>
+    <div class="card"><div class="ck">1998 → GATT estándar</div><p><span class="mono">0x2A6E</span> y <span class="mono">0x2B04</span>: el catálogo del consorcio, no un formato nuestro.</p></div>
+    <div class="card"><div class="ck">2016 → HTTPS + gesto</div><p>el botón <b>Conectar</b> y el diálogo de elección: las reglas de seguridad de Web Bluetooth.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div><b>Conocer la historia es saber por qué el protocolo es como
+  es</b> — y saber qué preguntas hacerle a la próxima tecnología que aparezca.</div></div>
+  <div class="pie">Apéndice · Historia del Bluetooth · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">12</div>
+</section>
+
+<!-- 13 · Cierre -->
+<section class="slide oscura">
+  <div class="centrar">
+    <div class="kicker">Apéndice · Historia del Bluetooth</div>
+    <h1 style="font-size:92px">Mil años después,<br>el rey sigue uniendo</h1>
+    <p class="sub">Un ESP32 y tu navegador, hablando el idioma de un consorcio
+    de 1998, con la radio de una actriz de 1942, bajo el nombre de un rey
+    del siglo X.</p>
+  </div>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+</body>
+</html>

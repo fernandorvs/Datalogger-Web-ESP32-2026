@@ -78,8 +78,10 @@ El ESP32 crea su propia red WiFi y sirve la app en `http://192.168.4.1`;
 la página hace polling del JSON con `seq` y los dos canales, como la capa 4
 de LabVIEW.
 
-Cada carpeta tiene el proyecto **PlatformIO** del ESP32 y un README con
-teoría mínima, cableado y los pasos de uso. La app es HTML/JS puro, sin
+Cada carpeta tiene el proyecto **PlatformIO** del ESP32, un README con
+teoría mínima, cableado y pasos de uso, y los **slides de la clase**. El
+proyecto 01 suma un apéndice: la **historia del Bluetooth**, del rey
+vikingo a Web Bluetooth. La app es HTML/JS puro, sin
 frameworks ni dependencias: se puede leer entera en una clase.
 
 ## 🧰 Requisitos

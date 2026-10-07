@@ -11,5 +11,8 @@ CHROME="${1:-$(command -v chromium || command -v chromium-browser || command -v 
 "$CHROME" --headless --disable-gpu --no-sandbox --no-pdf-header-footer \
   --virtual-time-budget=15000 \
   --print-to-pdf="../02-wifi/Slides_Logger_WiFi.pdf" slides-02-wifi.html
+"$CHROME" --headless --disable-gpu --no-sandbox --no-pdf-header-footer \
+  --virtual-time-budget=15000 \
+  --print-to-pdf="../01-ble/Slides_Apendice_Bluetooth.pdf" slides-apendice-bluetooth.html
 
 echo "PDFs generados en 01-ble/ y 02-wifi/"

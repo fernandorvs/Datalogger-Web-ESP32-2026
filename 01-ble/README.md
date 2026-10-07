@@ -112,3 +112,10 @@ ejercicio: el bloque `conectar()` tiene 20 líneas y es todo el protocolo.
   placa es una C3 — en el C3 el GPIO 34 no existe. El firmware actual elige
   GPIO 3 automáticamente (`#ifdef CONFIG_IDF_TARGET_ESP32C3`): actualizar y
   recablear el cursor a GPIO 3.
+
+## 📜 Apéndice
+
+[`Slides_Apendice_Bluetooth.pdf`](Slides_Apendice_Bluetooth.pdf) — la
+historia del Bluetooth: del rey Harald Blåtand y la patente de Hedy Lamarr
+al BLE, GATT y Web Bluetooth que usa este logger. Cada pieza del protocolo
+tiene fecha y motivo — conocer la historia es saber por qué es como es.
