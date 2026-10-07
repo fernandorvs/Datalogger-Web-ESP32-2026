@@ -154,15 +154,9 @@ img.esquema { width: 100%; }
 /* bloque de código largo: tipografía apenas menor */
 .codigo.compacto { font-size: 23px; line-height: 1.55; padding: 32px 44px; }
 
-/* escudo UNSE: grande en las tapas oscuras, chico al pie en el resto */
-.slide::after {
+/* escudo UNSE: solo en la portada, bien presente */
+.slide:first-child::after {
   content: ''; position: absolute;
-  bottom: 48px; right: 150px; width: 58px; height: 82px;
-  background: url('img/escudo-contenido.png') no-repeat center / contain;
+  top: 96px; right: 150px; width: 200px; height: 283px;
+  background: url('img/escudo-portada.png') no-repeat center / contain;
 }
-.slide.oscura::after {
-  background-image: url('img/escudo-portada.png');
-  width: 130px; height: 184px;
-  top: 100px; right: 150px; bottom: auto;
-}
-.pie-num { right: 236px; }
