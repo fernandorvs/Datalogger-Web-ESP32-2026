@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Slides · Apéndice · Historia del WiFi</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<!-- 1 · Portada -->
+<section class="slide oscura">
+  <div style="height:150px"></div>
+  <div class="kicker">Apéndice · Datalogger Web</div>
+  <h1 style="font-size:110px">Historia del<br>WiFi</h1>
+  <p class="sub">De una radio entre islas de Hawái a un servidor web en tu
+  banco de trabajo: <b>por qué la red es como es</b>.</p>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+<!-- 2 · ALOHAnet -->
+<section class="slide">
+  <div class="kicker">1 · La semilla</div>
+  <h1>1971: una red entre islas</h1>
+  <div class="cols">
+    <div>
+      <p>En la Universidad de Hawái, <b>Norman Abramson</b> tenía un problema
+      geográfico: campus repartidos en islas, sin cables posibles. Su
+      solución, <b>ALOHAnet</b>, fue la primera red de paquetes por radio.</p>
+      <p>Su regla de acceso era de una elegancia brutal: <b>transmití cuando
+      quieras; si chocás con otro, esperá un tiempo al azar y reintentá.</b>
+      Ese "acceso aleatorio" es el abuelo de todo lo que vino después.</p>
+    </div>
+    <div class="card"><div class="ck">1973 · la descendencia</div><h3 class="chica">Ethernet</h3>
+      <p><b>Bob Metcalfe</b> (Xerox PARC) estudió ALOHA y lo convirtió en la
+      LAN cableada que dominó el mundo. Décadas más tarde, el WiFi nacería
+      como "Ethernet sin cables": el círculo se cierra.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">2</div>
+</section>
+
+<!-- 3 · FCC 1985 -->
+<section class="slide gris">
+  <div class="kicker">2 · La decisión regulatoria</div>
+  <h1>1985: la banda queda libre</h1>
+  <p>La FCC de Estados Unidos autoriza el uso <b>sin licencia</b> de las
+  bandas ISM (900 MHz, 2,4 GHz, 5,8 GHz) para equipos de espectro
+  ensanchado. Una decisión administrativa, casi burocrática — y una de las
+  más fecundas de la historia de las comunicaciones.</p>
+  <div class="cards c3 mt">
+    <div class="card"><div class="ck">sin permiso</div><h3 class="chica">Cualquiera transmite</h3>
+      <p>sin pagar licencia ni pedir turno: la barrera de entrada desaparece.</p></div>
+    <div class="card"><div class="ck">a cambio</div><h3 class="chica">Nadie te protege</h3>
+      <p>la banda es de todos: microondas, teclados, vecinos. Convivir es problema tuyo.</p></div>
+    <div class="card oscuro"><div class="ck">consecuencia</div><h3 class="chica">Nacen WiFi y Bluetooth</h3>
+      <p>las dos radios de este curso viven ahí — y por eso se pelean el mismo aire en el aula.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">3</div>
+</section>
+
+<!-- 4 · CSIRO y el multipath -->
+<section class="slide">
+  <div class="kicker">3 · La física</div>
+  <h1>El enemigo era el eco</h1>
+  <div class="cols">
+    <div>
+      <p>Adentro de un edificio la señal <b>rebota</b>: paredes, muebles,
+      personas. Al receptor le llegan copias desfasadas de lo mismo
+      (<b>multipath</b>) que se pisan entre sí. A velocidades altas, eso
+      destruye los datos.</p>
+      <p>La salida fue <b>OFDM</b>: en vez de un solo canal rápido, muchas
+      subportadoras lentas en paralelo — cada una tan lenta que los ecos ya
+      no la confunden.</p>
+    </div>
+    <div class="card"><div class="ck">años 90 · australia</div><h3 class="chica">CSIRO: de los agujeros negros al WiFi</h3>
+      <p><b>John O'Sullivan</b> y su equipo venían de la radioastronomía —
+      buscaban ecos de agujeros negros en explosión con matemática de
+      Fourier. Esa misma matemática, aplicada al eco de las paredes, terminó
+      en la patente australiana que está adentro de 802.11a/g/n.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">4</div>
+</section>
+
+<!-- 5 · 802.11 y el nombre -->
+<section class="slide gris">
+  <div class="kicker">4 · El estándar y la marca</div>
+  <h1>1997: 802.11 · 1999: "Wi-Fi"</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">1997</div><h3 class="chica">IEEE 802.11</h3>
+      <p>el primer estándar: 2 Mbit/s. Como el Bluetooth 1.0, nació
+      imperfecto — ninguna tecnología llega terminada.</p></div>
+    <div class="card"><div class="ck">1999</div><h3 class="chica">802.11b + Alliance</h3>
+      <p>11 Mbit/s y un consorcio que <b>certifica interoperabilidad</b>
+      (el mismo rol que el SIG en Bluetooth). Apple lo integra en la iBook:
+      despegue masivo.</p></div>
+    <div class="card"><div class="ck">el nombre</div><h3 class="chica">"Wi-Fi" no significa nada</h3>
+      <p>lo inventó una consultora de marcas porque sonaba bien.
+      "Wireless Fidelity" es un mito posterior — buen dato para el asado.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>De nuevo la fórmula ganadora: <b>estándar abierto + consorcio
+  que certifica</b>. Por eso el ESP32, tu celular y el router del aula se entienden sin conocerse.</div></div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">5</div>
+</section>
+
+<!-- 6 · La escalera de velocidades -->
+<section class="slide">
+  <div class="kicker">5 · La escalera</div>
+  <h1>De 2 megabits a gigabits</h1>
+  <table>
+    <tr><th>Año</th><th>Estándar</th><th>Velocidad tope</th><th>La novedad</th></tr>
+    <tr><td>1997</td><td class="mono">802.11</td><td>2 Mbit/s</td><td>el punto de partida</td></tr>
+    <tr><td>1999</td><td class="mono">802.11b</td><td>11 Mbit/s</td><td>el que explotó comercialmente</td></tr>
+    <tr><td>2003</td><td class="mono">802.11g</td><td>54 Mbit/s</td><td>OFDM en 2,4 GHz</td></tr>
+    <tr><td>2009</td><td class="mono">802.11n</td><td>600 Mbit/s</td><td>MIMO: varias antenas a la vez</td></tr>
+    <tr><td>2013–hoy</td><td class="mono">ac · ax · be</td><td>gigabits</td><td>rebautizados "WiFi 5, 6 y 7" para humanos</td></tr>
+  </table>
+  <p class="mt">Nuestro ESP32 habla <b>802.11 b/g/n en 2,4 GHz</b> — tecnología de hace
+  más de una década, y justo por eso: <b>madura, barata y suficiente</b> para un JSON por segundo.</p>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">6</div>
+</section>
+
+<!-- 7 · Seguridad -->
+<section class="slide gris">
+  <div class="kicker">6 · La seguridad, a los golpes</div>
+  <h1>WEP → WPA → WPA2 → WPA3</h1>
+  <div class="flujo">
+    <div class="card"><div class="ck">1999</div><h3 class="chica">WEP</h3>
+      <p>el cifrado original. Roto por diseño: en 2001 se quebraba en minutos.</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">2003</div><h3 class="chica">WPA</h3>
+      <p>el parche de emergencia, con <b>frases de 8 a 63 caracteres</b>.</p></div>
+    <div class="flecha">➔</div>
+    <div class="card oscuro"><div class="ck">2004</div><h3 class="chica">WPA2</h3>
+      <p>cifrado serio (AES). El estándar por dos décadas — el de nuestro AP.</p></div>
+    <div class="flecha">➔</div>
+    <div class="card"><div class="ck">2018</div><h3 class="chica">WPA3</h3>
+      <p>la generación actual, resistente a ataques de diccionario.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div>¿Por qué <span class="mono">AP_PASS</span> exige <b>8 caracteres
+  o más</b> — y <span class="mono">softAP()</span> falla en silencio con menos? Porque el mínimo de la frase
+  WPA está en la especificación de 2003. <b>Hasta nuestros errores típicos tienen fecha.</b></div></div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">7</div>
+</section>
+
+<!-- 8 · Infraestructura -->
+<section class="slide">
+  <div class="kicker">7 · La infraestructura invisible</div>
+  <h1>Por qué el logger vive en 192.168.4.1</h1>
+  <div class="cards c3">
+    <div class="card"><div class="ck">802.11 · 1997</div><h3 class="chica">El Access Point</h3>
+      <p>el estándar define la red con un coordinador central (BSS).
+      Nuestro ESP32 en modo AP <b>es</b> ese coordinador.</p></div>
+    <div class="card"><div class="ck">años 90</div><h3 class="chica">DHCP</h3>
+      <p>el protocolo que reparte direcciones solo. Por eso conectarse a la
+      red del logger no requiere configurar nada.</p></div>
+    <div class="card"><div class="ck">1996</div><h3 class="chica">RFC 1918</h3>
+      <p>reserva <span class="mono">192.168.x.x</span> para redes privadas: direcciones que
+      no existen en internet — perfectas para una red que tampoco.</p></div>
+  </div>
+  <p class="mt">Y arriba de todo, <b>HTTP (1991)</b>: el protocolo de la web, sirviendo
+  nuestra página y nuestro JSON. <b>La app no necesitó inventar nada: toda la pila ya existía.</b></p>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">8</div>
+</section>
+
+<!-- 9 · La radio regalada -->
+<section class="slide gris">
+  <div class="kicker">8 · La democratización</div>
+  <h1>2016: la radio se vuelve regalo</h1>
+  <div class="cols">
+    <div>
+      <p>Durante años, ponerle WiFi a un equipo costaba una placa entera y
+      decenas de dólares. En 2014 una empresa de Shanghái, <b>Espressif</b>,
+      sacude el mercado con el <b>ESP8266</b>: WiFi completo por un par de
+      dólares. En 2016 llega el <b>ESP32</b>: WiFi + Bluetooth + dos núcleos,
+      integrados en el mismo chip.</p>
+      <p>El resultado es este curso: <b>la radio dejó de ser el problema</b>.
+      Hoy el costo de conectar un instrumento es intelectual, no económico —
+      saber qué enlace elegir y por qué.</p>
+    </div>
+    <div class="card oscuro"><div class="ck">nuestro banco</div><h3 class="chica">Un AP de 5 dólares</h3>
+      <p>el mismo silicio que sirve la app del logger corre el stack 802.11
+      completo, WPA2, DHCP, TCP/IP y HTTP — cosas que en 1999 pedían una PC
+      dedicada.</p></div>
+  </div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">9</div>
+</section>
+
+<!-- 10 · Medio siglo en una tabla -->
+<section class="slide">
+  <div class="kicker">9 · El mapa completo</div>
+  <h1>Medio siglo en una tabla</h1>
+  <table class="compacta">
+    <tr><th>Año</th><th>Hito</th><th>Qué nos dejó</th></tr>
+    <tr><td>1971</td><td>ALOHAnet conecta las islas de Hawái</td><td>el acceso aleatorio por radio</td></tr>
+    <tr><td>1985</td><td>la FCC libera las bandas ISM</td><td>el aire sin licencia</td></tr>
+    <tr><td>1991</td><td>Berners-Lee publica HTTP</td><td>el protocolo de nuestra app</td></tr>
+    <tr><td>1997</td><td>IEEE 802.11</td><td>el Access Point</td></tr>
+    <tr><td>1999</td><td>802.11b + Wi-Fi Alliance</td><td>interoperabilidad certificada</td></tr>
+    <tr><td>2004</td><td>WPA2</td><td>la clave de 8+ caracteres</td></tr>
+    <tr><td>2016</td><td>Espressif lanza el ESP32</td><td>la radio de 5 dólares</td></tr>
+    <tr><td><b>2026</b></td><td><b>nuestro logger en el banco</b></td><td>todo lo anterior, junto</td></tr>
+  </table>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">10</div>
+</section>
+
+<!-- 11 · Mapeo al banco -->
+<section class="slide gris">
+  <div class="kicker">9 · El mapa completo</div>
+  <h1>Cada pieza de nuestro logger tiene fecha</h1>
+  <div class="cards c2">
+    <div class="card"><div class="ck">1997 → softAP()</div><p>el ESP32 como <b>coordinador BSS</b>: el modo Access Point es el corazón del estándar original.</p></div>
+    <div class="card"><div class="ck">2003 → el831logger</div><p>la clave <b>de 8 o más caracteres</b>: el mínimo de la frase WPA, escrito hace dos décadas.</p></div>
+    <div class="card"><div class="ck">1996 → 192.168.4.1</div><p>dirección <b>privada</b> (RFC 1918) repartida por <b>DHCP</b>: la red que no necesita internet.</p></div>
+    <div class="card"><div class="ck">1991 → GET /medicion</div><p><b>HTTP</b> puro: el navegador de 2026 le habla al ESP32 con el protocolo del CERN de 1991.</p></div>
+  </div>
+  <div class="tip"><span class="foco">◆</span><div><b>Conocer la historia es saber por qué la red es como es</b>
+  — y entender que "simple" casi siempre significa "con cincuenta años de trabajo escondido abajo".</div></div>
+  <div class="pie">Apéndice · Historia del WiFi · Datalogger Web ESP32 · EL831 2026</div>
+  <div class="pie-num">11</div>
+</section>
+
+<!-- 12 · Cierre -->
+<section class="slide oscura">
+  <div class="centrar">
+    <div class="kicker">Apéndice · Historia del WiFi</div>
+    <h1 style="font-size:92px">El WiFi no se inventó:<br>se fue acumulando</h1>
+    <p class="sub">Una radio entre islas, una banda liberada, matemática de
+    radioastrónomos y una marca que no significa nada — todo eso enciende
+    cuando tu celular encuentra la red del logger.</p>
+  </div>
+  <div class="pie">Datalogger Web ESP32 · EL831 Instrumentación Electrónica · 2026</div>
+</section>
+
+</body>
+</html>

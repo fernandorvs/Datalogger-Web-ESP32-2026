@@ -117,3 +117,12 @@ no hay scripts ni pasos intermedios — **editar y compilar**.
 - **`Pin 34 is not ADC pin!` en el monitor y el pote clavado en 0**: la
   placa es una C3 — el GPIO 34 no existe ahí. El firmware actual elige
   GPIO 3 automáticamente: actualizar y recablear el cursor a GPIO 3.
+
+## 📜 Apéndice
+
+[`Slides_Apendice_WiFi.pdf`](Slides_Apendice_WiFi.pdf) — la historia del
+WiFi: de ALOHAnet entre las islas de Hawái y la banda ISM liberada por la
+FCC al OFDM de los radioastrónomos del CSIRO, el 802.11 y el WPA que exige
+los 8 caracteres de nuestro `AP_PASS`. Cada pieza de la red del logger
+tiene fecha y motivo — conocer la historia es saber por qué la red es como
+es.
