@@ -78,6 +78,12 @@ El ESP32 crea su propia red WiFi y sirve la app en `http://192.168.4.1`;
 la página hace polling del JSON con `seq` y los dos canales, como la capa 4
 de LabVIEW.
 
+### 🧪 [Apéndice — La app web, de 0 a instalable](apendice-web/)
+Cómo está hecha la página del logger, en capas: una **versión mínima** de
+~25 líneas de JS para escribir desde cero, el tour por la **app completa**,
+el delta exacto que la hace **instalable** (PWA), y cómo **publicar tu
+propia copia** — local, gratis en internet o con dominio propio.
+
 Cada carpeta tiene el proyecto **PlatformIO** del ESP32, un README con
 teoría mínima, cableado y pasos de uso, y los **slides de la clase** —
 más un apéndice histórico por proyecto: la **historia del Bluetooth**

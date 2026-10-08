@@ -87,6 +87,10 @@ click y se prueba con `?demo=1`, sin ESP32. Al compilar, PlatformIO la
 embebe automáticamente en el binario (`board_build.embed_txtfiles`):
 no hay scripts ni pasos intermedios — **editar y compilar**.
 
+La anatomía de la página (registro, gráficos canvas, CSV) es la misma de la
+app BLE y está explicada bloque por bloque en el
+[apéndice de la app web](../apendice-web/).
+
 ## 🗣️ Qué discutir
 
 - **Varios clientes a la vez**: conectar dos celulares — cada navegador

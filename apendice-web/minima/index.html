@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logger BLE — versión mínima</title>
+
+<!--
+  Logger BLE · versión mínima — EL831 2026
+
+  Todo el protocolo y nada de presentación: la app completa (docs/index.html)
+  hace exactamente esto, más gráficos, estadísticas y CSV.
+
+  OJO: no funciona con doble click. Web Bluetooth exige "contexto seguro",
+  y file:// no lo es — pero http://localhost SÍ. Servirla con:
+
+      python -m http.server 8000        (en esta carpeta)
+
+  y abrir  http://localhost:8000  en Chrome o Edge. Ver el README del apéndice.
+-->
+
+<!-- Toda la interfaz: un botón y dos renglones. -->
+<button id="btnConectar">Conectar por Bluetooth</button>
+<p>Temperatura: <span id="temp">—</span> °C</p>
+<p>Pote: <span id="pote">—</span> %</p>
+
+<script>
+document.getElementById('btnConectar').onclick = async () => {
+
+  // 1. El diálogo del navegador: el usuario elige el dispositivo. El filtro
+  //    muestra solo los que anuncian Environmental Sensing (0x181A) — la
+  //    página jamás ve los dispositivos que no le mostraste.
+  const dispositivo = await navigator.bluetooth.requestDevice({
+    filters: [{ services: ['environmental_sensing'] }]
+  });
+
+  // 2. Conectar al GATT y abrir el servicio.
+  const gatt = await dispositivo.gatt.connect();
+  const servicio = await gatt.getPrimaryService('environmental_sensing');
+
+  // 3. Canal temperatura — 0x2A6E: sint16 little-endian en centésimas de °C.
+  //    (0x7F 0x09 → 2431 → 24,31 °C)
+  const cTemp = await servicio.getCharacteristic(0x2A6E);
+  cTemp.addEventListener('characteristicvaluechanged', e => {
+    const celsius = e.target.value.getInt16(0, true) / 100;
+    document.getElementById('temp').textContent = celsius.toFixed(2);
+  });
+  await cTemp.startNotifications();
+
+  // 4. Canal potenciómetro — 0x2B04: uint8 en pasos de 0,5 %.
+  //    (0x73 → 115 → 57,5 %)
+  const cPote = await servicio.getCharacteristic(0x2B04);
+  cPote.addEventListener('characteristicvaluechanged', e => {
+    const pct = e.target.value.getUint8(0) / 2;
+    document.getElementById('pote').textContent = pct.toFixed(1);
+  });
+  await cPote.startNotifications();
+};
+</script>
+</html>
