@@ -12,7 +12,7 @@ gratis o casi, y por eso se puede entender entera.
 
 ```mermaid
 flowchart LR
-    V1["<b>v1 · mínima</b><br/>minima/index.html<br/>~25 líneas de JS"]
+    V1["<b>v1 · mínima</b><br/>docs/minima/<br/>~25 líneas de JS"]
     V2["<b>v2 · completa</b><br/>docs/index.html<br/>+ gráficos · stats · CSV · demo"]
     V3["<b>v3 · instalable</b><br/>+ manifest + sw.js + íconos<br/>(3 archivos y ~3 líneas)"]
     V1 -->|"solo presentación"| V2 -->|"solo empaque"| V3
@@ -23,13 +23,21 @@ nunca más**. Lo que se agrega después es presentación y empaque.
 
 ---
 
-## 🧪 Versión 1 — mínima ([`minima/index.html`](minima/index.html))
+## 🧪 Versión 1 — mínima ([`docs/minima/index.html`](../docs/minima/index.html))
+
+**Verla andando ya mismo** (está publicada junto a la app):
+**https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/minima/** —
+el *antes*, al lado del *después*
+([la app completa](https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/)).
+Mismo ESP32, mismo protocolo: conectar con una y después con la otra.
 
 Un botón, dos renglones de texto y el protocolo completo: `requestDevice`
 con filtro por el servicio 0x181A, `connect`, una suscripción por
 característica (0x2A6E temperatura, 0x2B04 pote) y la decodificación de los
 bytes. Sin CSS, sin gráficos, sin manejo de errores — **a propósito**: cabe
-en una pantalla y se escribe desde cero siguiendo los comentarios.
+en una pantalla y se escribe desde cero siguiendo los comentarios. El
+ejercicio no es *abrirla* sino **reproducirla**: escribirla y servirla en tu
+propia máquina — para eso sigue el resto de esta sección.
 
 Lo que quedó afuera (y la v2 agrega): reconexión y estados de error, el
 registro en RAM con timestamp, los gráficos, las estadísticas, el CSV y el
@@ -47,13 +55,14 @@ entrar por `localhost`.
 ### Servirla — opción A: VS Code (ya lo tenés)
 
 Si ya usás VS Code con PlatformIO, no hay que instalar nada más: extensión
-**Live Server** (Ritwick Dey) → abrir la carpeta `minima/` → botón **Go
-Live** (abajo a la derecha) → se abre `http://127.0.0.1:5500`. Listo.
+**Live Server** (Ritwick Dey) → abrir la carpeta `docs/minima/` (o la de tu
+copia) → botón **Go Live** (abajo a la derecha) → se abre
+`http://127.0.0.1:5500`. Listo.
 
 ### Servirla — opción B: Python
 
 Python trae un servidor de archivos incorporado. En una terminal, **parado
-en la carpeta `minima/`**:
+en la carpeta donde está tu `index.html`** (acá, `docs/minima/`):
 
 ```bash
 python -m http.server 8000

@@ -63,6 +63,17 @@ Uso: abrir la app → **Conectar por Bluetooth** → elegir el dispositivo del
 grupo → el registro arranca solo. **Descargar CSV** exporta todo lo
 registrado; `?demo=1` muestra la interfaz sin hardware.
 
+El antes y el después, publicados lado a lado — mismo ESP32, mismo
+protocolo, conectar con una y después con la otra:
+
+- **Versión mínima** (el protocolo pelado, ~25 líneas de JS):
+  https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/minima/
+- **App completa** (gráficos, stats, CSV, PWA):
+  https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/
+
+Cómo se llega de una a la otra está explicado en el
+[apéndice web](../apendice-web/).
+
 La app es una **PWA instalable**: ícono ⊕ en la barra de direcciones (PC) o
 menú ⋮ → *Instalar app* (Android). Ícono propio, ventana propia, y gracias
 al service worker (`docs/sw.js`) abre aun sin internet — el Bluetooth es

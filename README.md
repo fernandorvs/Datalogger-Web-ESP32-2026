@@ -18,6 +18,9 @@ registra: el logger vive en el navegador (RAM + exportación CSV).
   (Chrome/Edge; con un ESP32 corriendo `01-ble` cerca, botón *Conectar*).
 - **Sin hardware**: agregar [`?demo=1`](https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/?demo=1)
   — datos simulados para conocer la interfaz.
+- **Versión mínima**: https://fernandorvs.github.io/Datalogger-Web-ESP32-2026/minima/
+  — el mismo protocolo en ~25 líneas de JS, sin nada más: el *antes* de la
+  app, para comparar (ver el [apéndice web](apendice-web/)).
 - **Logger WiFi**: no tiene URL pública a propósito — la sirve el propio
   ESP32 en `http://192.168.4.1` (ver `02-wifi/`).
 
